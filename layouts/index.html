@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>{{ .Site.Title }}</h1>
+    </header>
+    <main>
+        <section id="watchlist">
+            <h2>My Watchlist</h2>
+            {{ $csvData := resources.Get "watchlist.csv" }}
+            {{ $watchlist := $csvData | transform.Unmarshal (dict "delimiter" ",") }}
+            {{ if $watchlist }}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range after 1 $watchlist }}
+                        <tr>
+                            <td>{{ index . 0 }}</td>
+                            <td>{{ index . 1 }}</td>
+                            <td>{{ index . 2 }}</td>
+                            <td>{{ index . 3 }}</td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            {{ else }}
+                <p>Error: Unable to read the watchlist data.</p>
+            {{ end }}
+        </section>
+    </main>
+    <footer>
+        <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}</p>
+    </footer>
+</body>
+</html>
