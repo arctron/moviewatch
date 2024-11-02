@@ -5,44 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .Site.Title }}</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <h1>{{ .Site.Title }}</h1>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-primary text-primary-foreground shadow-md">
+        <div class="container mx-auto px-4 py-4 sm:py-6 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 sm:w-8 sm:h-8">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                    <line x1="7" y1="2" x2="7" y2="22"></line>
+                    <line x1="17" y1="2" x2="17" y2="22"></line>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <line x1="2" y1="7" x2="7" y2="7"></line>
+                    <line x1="2" y1="17" x2="7" y2="17"></line>
+                    <line x1="17" y1="17" x2="22" y2="17"></line>
+                    <line x1="17" y1="7" x2="22" y2="7"></line>
+                </svg>
+                <h1 class="text-xl sm:text-2xl font-bold">{{ .Site.Title }}</h1>
+            </div>
+        </div>
     </header>
-    <main>
-        <section id="watchlist">
-            <h2>My Watchlist</h2>
+    <main class="flex-grow container mx-auto px-4 py-6 sm:py-8">
+        <section id="watchlist" class="bg-white shadow-md rounded-lg p-4 sm:p-6">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-foreground">My Watchlist</h2>
             {{ $csvData := resources.Get "watchlist.csv" }}
             {{ $watchlist := $csvData | transform.Unmarshal (dict "delimiter" ",") }}
             {{ if $watchlist }}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{ range after 1 $watchlist }}
-                        <tr>
-                            <td>{{ index . 0 }}</td>
-                            <td>{{ index . 1 }}</td>
-                            <td>{{ index . 2 }}</td>
-                            <td>{{ index . 3 }}</td>
-                        </tr>
-                        {{ end }}
-                    </tbody>
-                </table>
+                <div class="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {{ range after 1 $watchlist }}
+                    <div class="bg-secondary p-3 sm:p-4 rounded-md shadow-sm">
+                        <h3 class="text-lg sm:text-xl font-semibold mb-2 text-secondary-foreground">{{ index . 0 }}</h3>
+                        <p class="text-sm sm:text-base text-secondary-foreground"><span class="font-medium">Type:</span> {{ index . 1 }}</p>
+                        <p class="text-sm sm:text-base text-secondary-foreground"><span class="font-medium">Status:</span> {{ index . 2 }}</p>
+                        <p class="text-sm sm:text-base text-secondary-foreground"><span class="font-medium">Rating:</span> {{ index . 3 }}</p>
+                    </div>
+                    {{ end }}
+                </div>
             {{ else }}
-                <p>Error: Unable to read the watchlist data.</p>
+                <p class="text-red-500">Error: Unable to read the watchlist data.</p>
             {{ end }}
         </section>
     </main>
-    <footer>
-        <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}</p>
+    <footer class="bg-muted py-4">
+        <div class="container mx-auto px-4 text-center text-sm sm:text-base text-muted-foreground">
+            <p>&copy; {{ now.Format "2006" }} {{ .Site.Title }}. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html>
